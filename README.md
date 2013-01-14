@@ -12,11 +12,13 @@ This project contains sources to integrate BrowserID in an iOS application.
 First, implement the BrowserIDViewControllerDelegate methods:
 
 ```
-// Called when the users cancelled the BrowserID process by hitting the Cancel button
+#import "BrowserIDController+UIKit.h"
+
+// Called when the user canceled the BrowserID process by hitting the Cancel button
 
 - (void) browserIDViewControllerDidCancel: (BrowserIDViewController*) browserIDViewController
 {
-    [browserIDViewController dismissModalViewControllerAnimated: YES];
+    [browserIDViewController dismissModalViewControllerAnimated: YES completion: NULL];
 }
 
 // Called when the user successfully went through the BrowserID dialog. The assertion
@@ -26,7 +28,7 @@ First, implement the BrowserIDViewControllerDelegate methods:
 - (void) browserIDViewController: (BrowserIDViewController*) browserIDViewController 
     didSucceedWithAssertion: (NSString*) assertion;
 {
-    [browserIDViewController dismissModalViewControllerAnimated: YES];
+    [browserIDViewController dismissModalViewControllerAnimated: YES completion: NULL];
     // Pass the assertion to your server to verify it
 }
 ```
@@ -34,38 +36,16 @@ First, implement the BrowserIDViewControllerDelegate methods:
 Then start the BrowserID process by creating a BrowserIDViewController and displaying it.
 
 ```
-- (void) startBrowserIDWithOrigin: (NSString*) origin
-{
+    NSURL* origin = [NSURL URLWithString: @"http://my.app/"]; // Your server's root URL
     BrowserIDViewController* browserIDViewController = [BrowserIDViewController new];
-    if (browserIDViewController != nil)
-    {
-        browserIDViewController.origin = origin;
-        browserIDViewController.delegate = self;
-        
-        UINavigationController* navigationController = [[UINavigationController alloc]
-            initWithRootViewController: browserIDViewController];
-        if (navigationController != nil)
-        {
-            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-                [self presentModalViewController: navigationController animated: YES];
-            } else {
-                navigationController.modalPresentationStyle = UIModalPresentationFullScreen;
-                [self presentModalViewController: navigationController animated: YES];
-            }
-        }
-    }
-}
+    browserIDViewController.origin = origin;
+    browserIDViewController.delegate = self;
+    [browserIDController presentModalInController: myViewController]
 ```
 You can also let the BrowserIDViewController call your verifier. Simply set the `verifier` property to the location of your own verifier.
 
 ```
-    BrowserIDViewController* browserIDViewController = [BrowserIDViewController new];
-    if (browserIDViewController != nil)
-    {
-        browserIDViewController.origin = origin;
-        browserIDViewController.delegate = self;
-        browserIDViewController.verifier = [NSURL URLWithString: @"https://my.app/verify"];
-    }
+    browserIDViewController.verifier = [NSURL URLWithString: @"https://my.app/verify"];
 ```
 
 Then instead of the `browserIDViewController:didSucceedWithAssertion:` delegate method, you implement the `browserIDViewController:didSucceedVerificationWithReceipt:` and `browserIDViewController:didFailVerificationWithError` methods.

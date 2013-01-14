@@ -1,46 +1,54 @@
-// BrowserIDViewController.h
+//
+//  BrowserIDController
+//  TouchWiki
+//
+//  Created by Jens Alfke on 1/9/13.
+//  Copyright (c) 2013 Couchbase. All rights reserved.
+//
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+@class BrowserIDController;
 
-@class BrowserIDViewController;
 
-/** Delegate of a BrowserIDViewController. Of the optional methods, didSucceedWithAssertion
+/** Delegate of a BrowserIDController. Of the optional methods, didSucceedWithAssertion
     must be implemented unless the controller's 'verifier' property is set, in which case both
     didSucceedVerificationWithReceipt and didFailVerificationWithError must be implemented. */
-@protocol BrowserIDViewControllerDelegate <NSObject>
+@protocol BrowserIDControllerDelegate <NSObject>
 
 /** Sent if the user presses the Cancel button on the BrowserID window. */
-- (void) browserIDViewControllerDidCancel: (BrowserIDViewController*) browserIDViewController;
+- (void) browserIDControllerDidCancel: (BrowserIDController*) browserIDController;
 
 /** Sent if the authentication process fails. Currently the reason will just be @"". */
-- (void) browserIDViewController: (BrowserIDViewController*) browserIDViewController
-               didFailWithReason: (NSString*) reason;
+- (void) browserIDController: (BrowserIDController*) browserIDController
+           didFailWithReason: (NSString*) reason;
 @optional
 /** Sent after authentication was successful. The assertion will be a long opaque string that
     should be sent to the origin site's BrowserID authentication API. */
-- (void) browserIDViewController: (BrowserIDViewController*) browserIDViewController
-         didSucceedWithAssertion: (NSString*) assertion;
+- (void) browserIDController: (BrowserIDController*) browserIDController
+     didSucceedWithAssertion: (NSString*) assertion;
 
 /** Sent after authentication and server-side verification are successful, _only_ if the
     controller's 'verifier' property is set to a server-side verifier URL.
     The 'receipt' parameter is the verifier response as decoded from JSON. */
-- (void) browserIDViewController: (BrowserIDViewController*) browserIDViewController
+- (void) browserIDController: (BrowserIDController*) browserIDController
          didSucceedVerificationWithReceipt: (NSDictionary*) receipt;
 
 /** Sent if server-side verification fails, _only_ if the controller's 'verifier' property is set
     to a server-side verifier URL. */
-- (void) browserIDViewController: (BrowserIDViewController*) browserIDViewController
-    didFailVerificationWithError: (NSError*) error;
+- (void) browserIDController: (BrowserIDController*) browserIDController
+         didFailVerificationWithError: (NSError*) error;
 
 @end
 
-@interface BrowserIDViewController : UIViewController <UIWebViewDelegate> {
+
+@interface BrowserIDController : NSObject
+{
+    @private
+    id _UIController;
 }
 
-@property (nonatomic,strong) IBOutlet UIWebView* webView;
-
 /** The object that will be informed about success or failure. Required. */
-@property (nonatomic,weak) id<BrowserIDViewControllerDelegate> delegate;
+@property (nonatomic,weak) id<BrowserIDControllerDelegate> delegate;
 
 /** The URL of the site the user is logging into (i.e. the site you will send the assertion to).
     Required. */
@@ -54,8 +62,10 @@
 /** After a successful login, this property will be set to the email address the user entered. */
 @property (nonatomic,strong) NSString* emailAddress;
 
-/** A convenience method that puts the receiver in a UINavigationController and presents it modally
-    in the given parent controller. */
-- (UINavigationController*) presentModalInController: (UIViewController*)parentController;
+// Internal:
+
+@property (nonatomic,readonly) NSString* injectedJavaScript;
+@property (nonatomic,readonly) NSURL* signInURL;
+- (BOOL) handleWebViewLink: (NSURL*)url;
 
 @end
