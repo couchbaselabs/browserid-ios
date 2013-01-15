@@ -78,7 +78,7 @@ static NSString* const kBrowserIDSignInURL = @"https://login.persona.org/sign_in
     
     NSString* message = url.host;
     NSString* param = [[url query] substringFromIndex: [@"data=" length]];
-    NSLog(@"MESSAGE '%@', param '%@'", message, param);
+    //NSLog(@"MESSAGE '%@', param '%@'", message, param);
     if ([message isEqualToString: @"assertionReady"]) {
         NSRange separator = [param rangeOfString: @"&email="];
         if (separator.length > 0) {
