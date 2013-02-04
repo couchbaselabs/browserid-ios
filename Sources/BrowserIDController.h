@@ -41,6 +41,8 @@
 @end
 
 
+/** Controller for BrowserID login. This class is cross-platform; the UI-related API is in
+    category methods found in BrowserIDController+UIKit.h and BrowserIDController+AppKit.h. */
 @interface BrowserIDController : NSObject
 {
     @private

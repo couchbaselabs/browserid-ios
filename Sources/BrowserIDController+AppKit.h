@@ -11,7 +11,10 @@
 
 @interface BrowserIDController (AppKit)
 
+/** A view controller that hosts the login UI. */
 @property (nonatomic,readonly) NSViewController* viewController;
+
+/** A panel window containing the login view controller. */
 @property (nonatomic,readonly) NSPanel* panel;
 
 @end

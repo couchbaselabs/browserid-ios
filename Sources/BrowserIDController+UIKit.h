@@ -10,6 +10,7 @@
 
 @interface BrowserIDController (UIKit)
 
+/** A UIViewController that contains the BrowserID login UI. */
 @property (readonly) UIViewController* viewController;
 
 /** A convenience method that puts the receiver in a UINavigationController and presents it modally
