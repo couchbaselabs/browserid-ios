@@ -1,18 +1,17 @@
 //
-//  BrowserIDController.m
+//  PersonaController.m
 //  TouchWiki
 //
 //  Created by Jens Alfke on 1/9/13.
-//  Copyright (c) 2013 Couchbase. All rights reserved.
 //
 
-#import "BrowserIDController.h"
+#import "PersonaController.h"
 
 
-static NSString* const kBrowserIDSignInURL = @"https://login.persona.org/sign_in#NATIVE";
+static NSString* const kPersonaSignInURL = @"https://login.persona.org/sign_in#NATIVE";
 
 
-@implementation BrowserIDController
+@implementation PersonaController
 
 @synthesize delegate = _delegate;
 @synthesize origin = _origin;
@@ -21,16 +20,16 @@ static NSString* const kBrowserIDSignInURL = @"https://login.persona.org/sign_in
 
 - (NSString*) injectedJavaScript
 {
-    NSString* injectedCodePath = [[NSBundle mainBundle] pathForResource: @"BrowserIDController" ofType: @"js"];
+    NSString* injectedCodePath = [[NSBundle mainBundle] pathForResource: @"PersonaController" ofType: @"js"];
     NSString* injectedCodeTemplate = [NSString stringWithContentsOfFile: injectedCodePath encoding:NSUTF8StringEncoding error: nil];
-    NSAssert(injectedCodeTemplate != nil, @"Could not load BrowserIDController.js");
+    NSAssert(injectedCodeTemplate != nil, @"Could not load PersonaController.js");
 
     return [NSString stringWithFormat: injectedCodeTemplate, _origin.absoluteString];
 }
 
 
 - (NSURLRequest*) signInURL {
-    return [NSURL URLWithString: kBrowserIDSignInURL];
+    return [NSURL URLWithString: kPersonaSignInURL];
 }
 
 
@@ -70,10 +69,10 @@ static NSString* const kBrowserIDSignInURL = @"https://login.persona.org/sign_in
 - (BOOL) handleWebViewLink: (NSURL*)url
 {
     // The JavaScript side (the code injected in viewDidLoad will make callbacks to this native code by requesting
-    // a BrowserIDController://callbackname/callback?data=foo style URL. So we capture those here and relay
+    // a PersonaController://callbackname/callback?data=foo style URL. So we capture those here and relay
     // them to our delegate.
 
-    if (![[[url scheme] lowercaseString] isEqualToString: @"browseridviewcontroller"])
+    if (![[[url scheme] lowercaseString] isEqualToString: @"personaviewcontroller"])
         return NO;
     
     NSString* message = url.host;

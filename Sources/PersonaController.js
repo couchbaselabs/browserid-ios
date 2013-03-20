@@ -6,7 +6,7 @@ window.onload = function()
     var origin = "%@";
     
     var callbackToCocoa = function(name, value) {
-        window.location = "BrowserIDViewController://" + name + "/callback?data=" + value;
+        window.location = "personaViewController://" + name + "/callback?data=" + value;
     };
 
     var internalGetCallback = function(assertion) {
@@ -27,5 +27,5 @@ window.onload = function()
 
     // Start the login process:
     var options = {};
-    BrowserID.internal.get(origin, internalGetCallback, options);
+    Persona.internal.get(origin, internalGetCallback, options);
 };
