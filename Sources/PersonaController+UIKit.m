@@ -105,7 +105,7 @@ static id noarcAutorelease(id obj) {
 - (IBAction) cancel
 {
     [_webView stopLoading];
-    [_controller.delegate browserIDControllerDidCancel: _controller];
+    [_controller.delegate personaControllerDidCancel: _controller];
 }
 
 - (BOOL) webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType

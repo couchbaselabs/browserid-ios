@@ -16,26 +16,26 @@
 @protocol PersonaControllerDelegate <NSObject>
 
 /** Sent if the user presses the Cancel button on the Persona window. */
-- (void) browserIDControllerDidCancel: (PersonaController*) browserIDController;
+- (void) personaControllerDidCancel: (PersonaController*) personaController;
 
 /** Sent if the authentication process fails. Currently the reason will just be @"". */
-- (void) browserIDController: (PersonaController*) browserIDController
+- (void) personaController: (PersonaController*) personaController
            didFailWithReason: (NSString*) reason;
 @optional
 /** Sent after authentication was successful. The assertion will be a long opaque string that
     should be sent to the origin site's Persona authentication API. */
-- (void) browserIDController: (PersonaController*) browserIDController
+- (void) personaController: (PersonaController*) personaController
      didSucceedWithAssertion: (NSString*) assertion;
 
 /** Sent after authentication and server-side verification are successful, _only_ if the
     controller's 'verifier' property is set to a server-side verifier URL.
     The 'receipt' parameter is the verifier response as decoded from JSON. */
-- (void) browserIDController: (PersonaController*) browserIDController
+- (void) personaController: (PersonaController*) personaController
          didSucceedVerificationWithReceipt: (NSDictionary*) receipt;
 
 /** Sent if server-side verification fails, _only_ if the controller's 'verifier' property is set
     to a server-side verifier URL. */
-- (void) browserIDController: (PersonaController*) browserIDController
+- (void) personaController: (PersonaController*) personaController
          didFailVerificationWithError: (NSError*) error;
 
 @end

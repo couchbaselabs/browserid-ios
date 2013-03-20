@@ -41,14 +41,14 @@ static NSString* const kPersonaSignInURL = @"https://login.persona.org/sign_in#N
     id verifyCompletionHandler = ^(NSHTTPURLResponse* response, NSData* data, NSError* error)
     {
         if (error) {
-            [_delegate browserIDController: self didFailVerificationWithError: error];
+            [_delegate personaController: self didFailVerificationWithError: error];
         } else {
             NSError* decodingError = nil;
             NSDictionary* receipt = [NSJSONSerialization JSONObjectWithData: data options: 0 error: &decodingError];
             if (decodingError) {
-                [_delegate browserIDController: self didFailVerificationWithError: decodingError];
+                [_delegate personaController: self didFailVerificationWithError: decodingError];
             } else {
-                [_delegate browserIDController: self didSucceedVerificationWithReceipt: receipt];
+                [_delegate personaController: self didSucceedVerificationWithReceipt: receipt];
             }
         }
     };
@@ -89,12 +89,12 @@ static NSString* const kPersonaSignInURL = @"https://login.persona.org/sign_in#N
         if (_verifier) {
             [self verifyAssertion: param];
         } else {
-            [_delegate browserIDController: self didSucceedWithAssertion: param];
+            [_delegate personaController: self didSucceedWithAssertion: param];
         }
     }
 
     else if ([message isEqualToString: @"assertionFailure"]) {
-        [_delegate browserIDController: self didFailWithReason: param];
+        [_delegate personaController: self didFailWithReason: param];
     }
 
     return YES;

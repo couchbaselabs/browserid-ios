@@ -91,7 +91,7 @@
 - (IBAction) cancel
 {
     [_webView.mainFrame stopLoading];
-    [_controller.delegate browserIDControllerDidCancel: _controller];
+    [_controller.delegate personaControllerDidCancel: _controller];
 }
 
 // WebPolicyDelegate method
