@@ -27,5 +27,11 @@ window.onload = function()
 
     // Start the login process:
     var options = {};
-    Persona.internal.get(origin, internalGetCallback, options);
+
+    // Doomed attempt to future-proof against internal changes Mozilla may or may not make to dialog.js
+    if (BrowserID && BrowserID.internal) {
+        BrowserID.internal.get(origin, internalGetCallback, options);
+    } else if (Persona && Persona.internal) {
+        Persona.internal.get(origin, internalGetCallback, options);
+    }
 };
