@@ -61,6 +61,9 @@
     Required. */
 @property (nonatomic,strong) NSURL* origin;
 
+/** Origin in canonical form: <protocol>://<host>[:<port>] */
+@property (readonly) NSString* originString;
+
 /** An optional URL of a verification service provided by your applicatin's server-side counterpart.
     If this property is set, an assertion will be sent to this URL as the body of a POST request,
     and the response relayed to the delegate via its verification-related methods. */

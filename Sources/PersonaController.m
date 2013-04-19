@@ -18,13 +18,27 @@ static NSString* const kPersonaSignInURL = @"https://login.persona.org/sign_in#N
 @synthesize verifier = _verifier;
 @synthesize emailAddress = _emailAddress;
 
+- (NSString*) originString {
+    NSAssert(_origin, @"No origin set");
+    NSString* scheme = _origin.scheme.lowercaseString;
+    NSMutableString* str = [NSMutableString stringWithFormat: @"%@://%@",
+                            scheme, _origin.host.lowercaseString];
+    NSNumber* port = _origin.port;
+    if (port) {
+        int defaultPort = [scheme isEqualToString: @"https"] ? 443 : 80;
+        if (port.intValue != defaultPort)
+            [str appendFormat: @":%@", port];
+    }
+    return str;
+}
+
 - (NSString*) injectedJavaScript
 {
     NSString* injectedCodePath = [[NSBundle mainBundle] pathForResource: @"PersonaController" ofType: @"js"];
     NSString* injectedCodeTemplate = [NSString stringWithContentsOfFile: injectedCodePath encoding:NSUTF8StringEncoding error: nil];
     NSAssert(injectedCodeTemplate != nil, @"Could not load PersonaController.js");
 
-    return [NSString stringWithFormat: injectedCodeTemplate, _origin.absoluteString];
+    return [NSString stringWithFormat: injectedCodeTemplate, self.originString];
 }
 
 
