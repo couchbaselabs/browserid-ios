@@ -1,7 +1,6 @@
 
 
-window.onload = function()
-{
+window.setTimeout(function() {
     // The origin is setup when this code template is loaded in the native application
     var origin = "%@";
     
@@ -25,13 +24,14 @@ window.onload = function()
                         encodeURIComponent(assertion) + "&email=" + encodeURIComponent(email));
     };
 
-    // Start the login process:
-    var options = {};
-
     // Doomed attempt to future-proof against internal changes Mozilla may or may not make to dialog.js
-    if (BrowserID && BrowserID.internal) {
-        BrowserID.internal.get(origin, internalGetCallback, options);
-    } else if (Persona && Persona.internal) {
-        Persona.internal.get(origin, internalGetCallback, options);
-    }
-};
+    var PersonaInternal = (BrowserID && BrowserID.internal) || (Persona && Persona.internal);
+
+    var startLogin = function() {
+        // Start the login process:
+        var options = {silent: false};
+        PersonaInternal.get(origin, internalGetCallback, options);
+    };
+
+    PersonaInternal.setPersistent(origin, startLogin);
+}, 50);

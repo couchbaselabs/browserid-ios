@@ -72,6 +72,11 @@ static id noarcAutorelease(id obj) {
     _webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [rootView addSubview: _webView];
     _webView.delegate = self;
+    _webView.suppressesIncrementalRendering = YES;
+    _webView.scrollView.scrollEnabled = NO;
+    _webView.scalesPageToFit = YES;
+    _webView.backgroundColor = [UIColor blackColor];
+
     self.view = rootView;
     noarcAutorelease(rootView);
 }
@@ -90,7 +95,6 @@ static id noarcAutorelease(id obj) {
 - (void) viewWillAppear:(BOOL)animated
 {
     [_webView loadRequest: [NSURLRequest requestWithURL: _controller.signInURL]];
-    [_webView stringByEvaluatingJavaScriptFromString: _controller.injectedJavaScript];
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation) interfaceOrientation
@@ -108,23 +112,35 @@ static id noarcAutorelease(id obj) {
     [_controller.delegate personaControllerDidCancel: _controller];
 }
 
-- (BOOL) webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+- (BOOL) webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request
+         navigationType:(UIWebViewNavigationType)navigationType
 {
     NSURL* url = request.URL;
     if ([_controller handleWebViewLink: url]) {
         return NO;
-    } else if ([[[url scheme] lowercaseString] isEqualToString: @"http"] ||
-               [[[url scheme] lowercaseString] isEqualToString: @"https"])
-    {
-        if (![url isEqual: _controller.signInURL])
-        {
-            [[UIApplication sharedApplication] openURL: url];
-            return NO;
-        }
     }
-
+    NSLog(@"PersonaController: Navigate to %@", url.absoluteString);
     return YES;
 }
+
+#if 1 // for debugging
+- (void)webViewDidStartLoad:(UIWebView *)webView {
+    NSLog(@"DidStartLoad");
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    NSURL* url = _webView.request.URL;
+    NSLog(@"DidFinishLoad: %@", url.absoluteString);
+    if ([url.host hasSuffix: @".persona.org"]) {
+        NSString* result = [_webView stringByEvaluatingJavaScriptFromString: _controller.injectedJavaScript];
+        NSLog(@"Injected JS! Result = '%@'", result);
+    }
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    NSLog(@"DidFailLoad: %@", error);
+}
+#endif
 
 
 @end
