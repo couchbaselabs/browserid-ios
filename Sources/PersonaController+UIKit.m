@@ -119,28 +119,14 @@ static id noarcAutorelease(id obj) {
     if ([_controller handleWebViewLink: url]) {
         return NO;
     }
-    NSLog(@"PersonaController: Navigate to %@", url.absoluteString);
     return YES;
-}
-
-#if 1 // for debugging
-- (void)webViewDidStartLoad:(UIWebView *)webView {
-    NSLog(@"DidStartLoad");
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     NSURL* url = _webView.request.URL;
-    NSLog(@"DidFinishLoad: %@", url.absoluteString);
     if ([url.host hasSuffix: @".persona.org"]) {
-        NSString* result = [_webView stringByEvaluatingJavaScriptFromString: _controller.injectedJavaScript];
-        NSLog(@"Injected JS! Result = '%@'", result);
+        [_webView stringByEvaluatingJavaScriptFromString: _controller.injectedJavaScript];
     }
 }
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    NSLog(@"DidFailLoad: %@", error);
-}
-#endif
-
 
 @end
