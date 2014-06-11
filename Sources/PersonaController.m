@@ -42,7 +42,7 @@ static NSString* const kPersonaSignInURL = @"https://login.persona.org/sign_in#N
 }
 
 
-- (NSURLRequest*) signInURL {
+- (NSURL*) signInURL {
     return [NSURL URLWithString: kPersonaSignInURL];
 }
 
@@ -67,7 +67,9 @@ static NSString* const kPersonaSignInURL = @"https://login.persona.org/sign_in#N
         }
     };
 
-    NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL: self.verifier cachePolicy: NSURLCacheStorageAllowed timeoutInterval: 5.0];
+    NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL: self.verifier
+                                                                cachePolicy: NSURLRequestReloadIgnoringCacheData
+                                                            timeoutInterval: 5.0];
 #if !__has_feature(objc_arc)
     [request autorelease];
 #endif
