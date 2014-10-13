@@ -94,6 +94,7 @@ static id noarcAutorelease(id obj) {
 
 - (void) viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear: animated];
     [_webView loadRequest: [NSURLRequest requestWithURL: _controller.signInURL]];
 }
 
